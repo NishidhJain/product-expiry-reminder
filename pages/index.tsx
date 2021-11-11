@@ -8,9 +8,28 @@ import InputModal from "../components/InputModal";
 import NoProductToShow from "../components/NoProductToShow";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import styles from "../styles/Home.module.css";
+import ProductsContainer from "../components/ProductsContainer";
 
 const Home: NextPage = () => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([
+    {
+      id: 1,
+      productName: "Metacin",
+      sellerName: "Jatin Pharma",
+      returnStatus: false,
+      purchaseDate: "Nov 2020",
+      expiryDate: "Dec 2021",
+    },
+    {
+      id: 2,
+      productName: "Crocin",
+      sellerName: "Jatin Pharma",
+      returnStatus: true,
+      purchaseDate: "Nov 2020",
+      expiryDate: "Dec 2021",
+    },
+  ]);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -30,7 +49,15 @@ const Home: NextPage = () => {
             <DatePicker />
           </Col>
         </Row>
-        {items.length > 0 ? "Atleast 1 item" : <NoProductToShow />}
+        <div
+          className={`${styles.min_vh_80} d-flex justify-content-center flex-column`}
+        >
+          {items.length > 0 ? (
+            <ProductsContainer items={items} />
+          ) : (
+            <NoProductToShow />
+          )}
+        </div>
         <Button
           variant="primary"
           onClick={handleShow}

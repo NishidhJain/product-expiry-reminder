@@ -19,7 +19,7 @@ const MonthPicker = () => {
   const currentMonth = months[new Date().getMonth()];
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
-  console.log(selectedMonth);
+  // console.log(selectedMonth);
 
   return (
     <>
