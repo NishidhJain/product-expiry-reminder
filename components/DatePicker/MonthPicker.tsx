@@ -1,3 +1,6 @@
+import Form from "react-bootstrap/Form";
+import { useState } from "react";
+
 const MonthPicker = () => {
   const months = [
     "Jan",
@@ -13,24 +16,24 @@ const MonthPicker = () => {
     "Nov",
     "Dec",
   ];
+  const currentMonth = months[new Date().getMonth()];
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
-  const currMonth = months[new Date().getMonth()];
-  // console.log(currMonth);
+  console.log(selectedMonth);
 
   return (
     <>
-      <label htmlFor="month">Month</label>
-      <select name="month" id="month">
+      <Form.Select
+        defaultValue={selectedMonth}
+        onChange={(e) => setSelectedMonth(e.target.value)}
+        name="month"
+      >
         {months.map((month, index) => (
-          <option
-            key={index}
-            value={month}
-            selected={currMonth === month ? true : false}
-          >
+          <option key={index} value={month}>
             {month}
           </option>
         ))}
-      </select>
+      </Form.Select>
     </>
   );
 };

@@ -1,3 +1,5 @@
+import Form from "react-bootstrap/Form";
+
 const YearPicker = () => {
   const getYearsList = (currYear) => {
     let yearsList = [];
@@ -10,22 +12,18 @@ const YearPicker = () => {
     return yearsList;
   };
   const currentYear = new Date().getUTCFullYear();
-  //   console.log(currentYear);
   const years = getYearsList(currentYear);
+  //   console.log(currentYear);
   //   console.log(years);
   return (
     <>
-      <select name="year">
+      <Form.Select defaultValue={currentYear}>
         {years.map((year, index) => (
-          <option
-            key={index}
-            value={year}
-            selected={currentYear === year ? true : false}
-          >
+          <option key={index} value={year}>
             {year}
           </option>
         ))}
-      </select>
+      </Form.Select>
     </>
   );
 };
