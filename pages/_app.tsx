@@ -6,7 +6,7 @@ import Context from "../context/Context";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Context>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </Context>
   );
 }

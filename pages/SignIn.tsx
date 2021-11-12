@@ -1,7 +1,37 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useState, useContext } from "react";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { useRouter } from "next/router";
+import { UserData } from "../context/Context";
 
 const SignIn: NextPage = () => {
+  const { setUserDetails } = useContext(UserData);
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      setEmail("");
+      setPassword("");
+      if (user) {
+        setUserDetails(user);
+        router.push("/");
+      }
+    } catch (err) {
+      alert(`Invalid credential ${err}`);
+    }
+  };
+
   return (
     <div>
       <Head>
@@ -10,11 +40,40 @@ const SignIn: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        
-      </main>
+      <Container className="p-2">
+        <Form onSubmit={handleSignIn}>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Email address"
+            className="mb-3"
+          >
+            <Form.Control
+              type="email"
+              placeholder="name@example.com"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required={true}
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId="floatingPassword" label="Password">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required={true}
+            />
+          </FloatingLabel>
+          <Button variant="primary" type="submit" className="mt-3">
+            Sign In
+          </Button>
+        </Form>
+        <p className="text-secondary">
+          Don't have an account? <Link href="/signup">Sign Up</Link>
+        </p>
+      </Container>
     </div>
-  )
-}
+  );
+};
 
-export default SignIn
+export default SignIn;

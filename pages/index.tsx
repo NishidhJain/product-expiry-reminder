@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserData } from "../context/Context";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -11,13 +11,21 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import styles from "../styles/Home.module.css";
 import ProductsContainer from "../components/ProductsContainer";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
-  const { items } = useContext(UserData);
+  const { items, userDetails } = useContext(UserData);
+  const router = useRouter();
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    if (!userDetails) {
+      router.push("/signin");
+    }
+  }, []);
 
   return (
     <Container>

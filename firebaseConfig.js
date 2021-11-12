@@ -3,7 +3,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
+  apiKey: "AIzaSyCv21EBH8XDDockss1iH5xV1xtQZREcJ-M",
   authDomain: "product-expiry-tracker.firebaseapp.com",
   projectId: "product-expiry-tracker",
   storageBucket: "product-expiry-tracker.appspot.com",
