@@ -1,4 +1,4 @@
-import { collection, getDoc } from "@firebase/firestore";
+import { collection, getDoc } from "firebase/firestore";
 import { createContext, useState, useEffect } from "react";
 import { db } from "../firebaseConfig";
 
@@ -33,6 +33,20 @@ const Context = ({ children }) => {
     getProductList();
   }, []);
 
+  const getItemFromLocalStorage = () => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      console.log("Local storage user:", user);
+    } else {
+      console.log("No data in Local storage ");
+    }
+  };
+
+  const setItemToLocalStorage = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+  // getItemFromLocalStorage();
+
   const itemsNotReturned = items.filter((item) => item.returnStatus === false);
   const itemsReturned = items.filter((item) => item.returnStatus === true);
 
@@ -42,6 +56,8 @@ const Context = ({ children }) => {
     itemsReturned,
     setUserDetails,
     userDetails,
+    getItemFromLocalStorage,
+    setItemToLocalStorage,
   };
 
   return <UserData.Provider value={values}>{children}</UserData.Provider>;

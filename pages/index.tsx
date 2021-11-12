@@ -1,17 +1,22 @@
 import { useContext, useEffect, useState } from "react";
 import { UserData } from "../context/Context";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
-import DatePicker from "../components/DatePicker/Index";
+
+import { signOut } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import InputModal from "../components/InputModal";
-import NoProductToShow from "../components/NoProductToShow";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import styles from "../styles/Home.module.css";
+
+import InputModal from "../components/InputModal";
+import NoProductToShow from "../components/NoProductToShow";
 import ProductsContainer from "../components/ProductsContainer";
-import { useRouter } from "next/router";
+import DatePicker from "../components/DatePicker/Index";
+import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   const { items, userDetails } = useContext(UserData);
@@ -35,26 +40,35 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="position-relative min-vh-100 py-3">
-        <Row>
-          <Col xs={12} md={6}>
-            <DatePicker />
-          </Col>
-        </Row>
-        <div
-          className={`${styles.min_vh_80} d-flex justify-content-center flex-column`}
-        >
-          {items.length > 0 ? <ProductsContainer /> : <NoProductToShow />}
-        </div>
-        <Button
-          variant="primary"
-          onClick={handleShow}
-          className="rounded-circle fs-2 py-1 px-3 position-absolute bottom-0 end-0 mr-3 mb-3"
-        >
-          +
-        </Button>
-        <InputModal show={show} handleClose={handleClose} />
-      </main>
+      {userDetails && (
+        <main className="position-relative min-vh-100 py-3">
+          <Button
+            variant="danger"
+            className="mb-3"
+            onClick={() => signOut(auth)}
+          >
+            Log Out
+          </Button>
+          <Row>
+            <Col xs={12} md={6}>
+              <DatePicker />
+            </Col>
+          </Row>
+          <div
+            className={`${styles.min_vh_80} d-flex justify-content-center flex-column`}
+          >
+            {items.length > 0 ? <ProductsContainer /> : <NoProductToShow />}
+          </div>
+          <Button
+            variant="primary"
+            onClick={handleShow}
+            className="rounded-circle fs-2 py-1 px-3 position-absolute bottom-0 end-0 mr-3 mb-3"
+          >
+            +
+          </Button>
+          <InputModal show={show} handleClose={handleClose} />
+        </main>
+      )}
     </Container>
   );
 };

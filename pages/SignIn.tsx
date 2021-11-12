@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { useRouter } from "next/router";
 import { UserData } from "../context/Context";
@@ -23,10 +23,20 @@ const SignIn: NextPage = () => {
       const user = await signInWithEmailAndPassword(auth, email, password);
       setEmail("");
       setPassword("");
-      if (user) {
-        setUserDetails(user);
-        router.push("/");
-      }
+
+      onAuthStateChanged(auth, (user) => {
+        console.log("Auth state changed", user);
+
+        if (user) {
+          const { email, uid, displayName } = user;
+          const personDetail = { uid, displayName, email };
+          console.log("person details", personDetail);
+          setUserDetails(personDetail);
+          router.push("/");
+        } else {
+          router.push("/signin");
+        }
+      });
     } catch (err) {
       alert(`Invalid credential ${err}`);
     }
@@ -69,7 +79,8 @@ const SignIn: NextPage = () => {
           </Button>
         </Form>
         <p className="text-secondary">
-          Don't have an account? <Link href="/signup">Sign Up</Link>
+          Don't have an account? <Link href="/signup">Sign Up</Link>{" "}
+          <Link href="/">Dashboard</Link>
         </p>
       </Container>
     </div>

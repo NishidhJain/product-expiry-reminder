@@ -1,22 +1,40 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState, useContext } from "react";
+
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth, usersCollection } from "../firebaseConfig";
+import { UserData } from "../context/Context";
+import { addDoc } from "firebase/firestore";
+
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebaseConfig";
-import { useRouter } from "next/router";
-import { UserData } from "../context/Context";
 
 const SignUp: NextPage = () => {
-  const { setUserDetails } = useContext(UserData);
   const router = useRouter();
+
+  const { setUserDetails, setItemToLocalStorage } = useContext(UserData);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConFirmPass] = useState("");
+
+  const createDbUser = async (uid) => {
+    const data = { uid, productList: [] };
+    try {
+      const res = await addDoc(usersCollection, data);
+      console.log("createDbUser", res);
+    } catch (err) {
+      alert("Unable to createDbUser", err.message);
+    }
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -27,13 +45,33 @@ const SignUp: NextPage = () => {
 
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
-      setEmail("");
-      setPassword("");
-      setConFirmPass("");
-      if (user) {
-        setUserDetails(user);
-        router.push("/");
-      }
+      // setEmail("");
+      // setPassword("");
+      // setConFirmPass("");
+      // if (user) {
+      //   const {
+      //     user: { email, uid, displayName },
+      //   } = user;
+      //   const personDetail = { uid, displayName, email };
+      //   console.log("person details", personDetail);
+      //   setUserDetails(personDetail);
+      //   setItemToLocalStorage(personDetail);
+      //   router.push("/");
+      // }
+      onAuthStateChanged(auth, (user) => {
+        console.log("Auth state changed");
+
+        if (user) {
+          const { email, uid, displayName } = user;
+          const personDetail = { uid, displayName, email };
+          createDbUser(uid);
+          console.log("person details", personDetail);
+          setUserDetails(personDetail);
+          router.push("/");
+        } else {
+          router.push("/signin");
+        }
+      });
     } catch (err) {
       alert(`Error occured while creating user : ${err.message}`);
     }
