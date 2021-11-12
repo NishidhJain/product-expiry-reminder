@@ -1,7 +1,44 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { useState, useContext } from "react";
+import Form from "react-bootstrap/Form";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { useRouter } from "next/router";
+import { UserData } from "../context/Context";
 
 const SignUp: NextPage = () => {
+  const { setUserDetails } = useContext(UserData);
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConFirmPass] = useState("");
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    if (confirmPass !== password) {
+      return alert("Password does not match");
+    }
+
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      setEmail("");
+      setPassword("");
+      setConFirmPass("");
+      if (user) {
+        setUserDetails(user);
+        router.push("/");
+      }
+    } catch (err) {
+      alert(`Error occured while creating user : ${err.message}`);
+    }
+  };
+
   return (
     <div>
       <Head>
@@ -10,11 +47,57 @@ const SignUp: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        
-      </main>
+      <Container className="p-2">
+        <Form onSubmit={handleSignUp}>
+          <FloatingLabel
+            controlId="floatingInput"
+            label="Email address"
+            className="mb-3"
+          >
+            <Form.Control
+              type="email"
+              placeholder="name@example.com"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required={true}
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingPassword"
+            label="Password"
+            className="mb-3"
+          >
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              required={true}
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingPassword"
+            label="Confirm Password"
+            className="mb-3"
+          >
+            <Form.Control
+              type="password"
+              placeholder="Confirm password"
+              onChange={(e) => setConFirmPass(e.target.value)}
+              value={confirmPass}
+              required={true}
+            />
+          </FloatingLabel>
+          <Button variant="primary" type="submit">
+            Sign UP
+          </Button>
+        </Form>
+        <p className="text-secondary">
+          Already have an account? <Link href="/signin">Sign In</Link>
+        </p>
+      </Container>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
