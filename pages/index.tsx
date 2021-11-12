@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { UserData } from "../context/Context";
 import type { NextPage } from "next";
 import Head from "next/head";
 import DatePicker from "../components/DatePicker/Index";
@@ -12,6 +13,9 @@ import styles from "../styles/Home.module.css";
 import ProductsContainer from "../components/ProductsContainer";
 
 const Home: NextPage = () => {
+  // const name = useContext(UserData);
+  // console.log(name);
+
   const [items, setItems] = useState([
     {
       id: 1,
