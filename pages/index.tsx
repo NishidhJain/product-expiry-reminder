@@ -13,27 +13,7 @@ import styles from "../styles/Home.module.css";
 import ProductsContainer from "../components/ProductsContainer";
 
 const Home: NextPage = () => {
-  // const name = useContext(UserData);
-  // console.log(name);
-
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      productName: "Metacin",
-      sellerName: "Jatin Pharma",
-      returnStatus: false,
-      purchaseDate: "Nov 2020",
-      expiryDate: "Dec 2021",
-    },
-    {
-      id: 2,
-      productName: "Crocin",
-      sellerName: "Jatin Pharma",
-      returnStatus: true,
-      purchaseDate: "Nov 2020",
-      expiryDate: "Dec 2021",
-    },
-  ]);
+  const { items } = useContext(UserData);
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -56,11 +36,7 @@ const Home: NextPage = () => {
         <div
           className={`${styles.min_vh_80} d-flex justify-content-center flex-column`}
         >
-          {items.length > 0 ? (
-            <ProductsContainer items={items} />
-          ) : (
-            <NoProductToShow />
-          )}
+          {items.length > 0 ? <ProductsContainer /> : <NoProductToShow />}
         </div>
         <Button
           variant="primary"

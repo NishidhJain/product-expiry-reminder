@@ -1,11 +1,10 @@
 import Accordion from "react-bootstrap/Accordion";
 import ProductDetails from "./ProductDetails";
+import { useContext } from "react";
+import { UserData } from "../context/Context";
 
-const ProductsContainer = ({ items }) => {
-  console.log(items);
-
-  const itemsNotReturned = items.filter((item) => item.returnStatus === false);
-  const itemsReturned = items.filter((item) => item.returnStatus === true);
+const ProductsContainer = () => {
+  const { itemsNotReturned, itemsReturned } = useContext(UserData);
   console.log(itemsNotReturned);
 
   return (
