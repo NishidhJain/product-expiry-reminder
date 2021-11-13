@@ -5,7 +5,7 @@ import { UserData } from "../context/Context";
 
 const ProductsContainer = () => {
   const { itemsNotReturned, itemsReturned } = useContext(UserData);
-  console.log(itemsNotReturned);
+  // console.log(itemsNotReturned);
 
   return (
     <div>

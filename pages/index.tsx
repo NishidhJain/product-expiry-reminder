@@ -19,7 +19,7 @@ import DatePicker from "../components/DatePicker/Index";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
-  const { items, userDetails } = useContext(UserData);
+  const { items, userDetails, setUserDetails } = useContext(UserData);
   const router = useRouter();
 
   const [show, setShow] = useState(false);
@@ -32,6 +32,14 @@ const Home: NextPage = () => {
     }
   }, []);
 
+  const logOut = () => {
+    // console.log("Before sigout userdetails ", userDetails);
+    setUserDetails(null);
+    console.log("Signing Out");
+    signOut(auth);
+    // console.log("after sigout userdetails ", userDetails);
+  };
+
   return (
     <Container>
       <Head>
@@ -42,11 +50,7 @@ const Home: NextPage = () => {
 
       {userDetails && (
         <main className="position-relative min-vh-100 py-3">
-          <Button
-            variant="danger"
-            className="mb-3"
-            onClick={() => signOut(auth)}
-          >
+          <Button variant="danger" className="mb-3" onClick={logOut}>
             Log Out
           </Button>
           <Row>

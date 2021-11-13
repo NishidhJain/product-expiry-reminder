@@ -19,13 +19,14 @@ const SignIn: NextPage = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+
     try {
       const user = await signInWithEmailAndPassword(auth, email, password);
       setEmail("");
       setPassword("");
 
       onAuthStateChanged(auth, (user) => {
-        console.log("Auth state changed", user);
+        console.log("Auth state changed SignIn", user);
 
         if (user) {
           const { email, uid, displayName } = user;

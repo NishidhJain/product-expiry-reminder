@@ -22,12 +22,15 @@ const SignUp: NextPage = () => {
 
   const { setUserDetails, setItemToLocalStorage } = useContext(UserData);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPass, setConFirmPass] = useState("");
+  const [userInput, setUserInput] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPass: "",
+  });
 
-  const createDbUser = async (uid) => {
-    const data = { uid, productList: [] };
+  const createDbUser = async (uid, displayName) => {
+    const data = { uid, displayName, productList: [] };
     try {
       const res = await addDoc(usersCollection, data);
       console.log("createDbUser", res);
@@ -36,42 +39,41 @@ const SignUp: NextPage = () => {
     }
   };
 
+  const onInputChange = (e) => {
+    setUserInput({ ...userInput, [e.target.name]: e.target.value });
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
+    // console.log(userInput);
+    // return;
 
-    if (confirmPass !== password) {
+    if (userInput.confirmPass !== userInput.password) {
       return alert("Password does not match");
     }
 
     try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      // setEmail("");
-      // setPassword("");
-      // setConFirmPass("");
-      // if (user) {
-      //   const {
-      //     user: { email, uid, displayName },
-      //   } = user;
-      //   const personDetail = { uid, displayName, email };
-      //   console.log("person details", personDetail);
-      //   setUserDetails(personDetail);
-      //   setItemToLocalStorage(personDetail);
-      //   router.push("/");
-      // }
-      onAuthStateChanged(auth, (user) => {
-        console.log("Auth state changed");
+      const user = await createUserWithEmailAndPassword(
+        auth,
+        userInput.email,
+        userInput.password
+      );
 
-        if (user) {
-          const { email, uid, displayName } = user;
-          const personDetail = { uid, displayName, email };
-          createDbUser(uid);
-          console.log("person details", personDetail);
-          setUserDetails(personDetail);
-          router.push("/");
-        } else {
-          router.push("/signin");
-        }
-      });
+      // onAuthStateChanged(auth, (user) => {
+      //   console.log("Auth state changed SignUp");
+
+      //   if (user) {
+      //     const { email, uid, displayName } = user;
+
+      //     const personDetail = { uid, displayname: userInput.name, email };
+      //     createDbUser(uid, userInput.name);
+      //     console.log("person details", personDetail);
+      //     setUserDetails(personDetail);
+      //     router.push("/");
+      //   } else {
+      //     router.push("/signin");
+      //   }
+      // });
     } catch (err) {
       alert(`Error occured while creating user : ${err.message}`);
     }
@@ -88,16 +90,31 @@ const SignUp: NextPage = () => {
       <Container className="p-2">
         <Form onSubmit={handleSignUp}>
           <FloatingLabel
-            controlId="floatingInput"
+            controlId="floatingInputName"
+            label="Name"
+            className="mb-3"
+          >
+            <Form.Control
+              type="text"
+              placeholder="Jon Doe"
+              value={userInput.name}
+              onChange={onInputChange}
+              required={true}
+              name="name"
+            />
+          </FloatingLabel>
+          <FloatingLabel
+            controlId="floatingInputEmail"
             label="Email address"
             className="mb-3"
           >
             <Form.Control
               type="email"
               placeholder="name@example.com"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              value={userInput.email}
+              onChange={onInputChange}
               required={true}
+              name="email"
             />
           </FloatingLabel>
           <FloatingLabel
@@ -108,22 +125,24 @@ const SignUp: NextPage = () => {
             <Form.Control
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
+              value={userInput.password}
+              onChange={onInputChange}
               required={true}
+              name="password"
             />
           </FloatingLabel>
           <FloatingLabel
-            controlId="floatingPassword"
+            controlId="floatingConfirmPassword"
             label="Confirm Password"
             className="mb-3"
           >
             <Form.Control
               type="password"
               placeholder="Confirm password"
-              onChange={(e) => setConFirmPass(e.target.value)}
-              value={confirmPass}
+              value={userInput.confirmPass}
+              onChange={onInputChange}
               required={true}
+              name="confirmPass"
             />
           </FloatingLabel>
           <Button variant="primary" type="submit">
